@@ -19,6 +19,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <sonar.host.url>https://192.168.0.4:9000</sonar.host.url>
     </properties>
 
     <dependencies>
