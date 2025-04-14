@@ -3,25 +3,23 @@ package com.example.bookreview.repository;
 import com.example.bookreview.models.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
+public interface BookRepository extends JpaRepository<Book, UUID> {
 
     boolean existsByTitleAndAuthor(String title, String author);
+
     @EntityGraph(attributePaths = "reviews")
-    Optional<Book> findById(Long id);
+    Optional<Book> findById(UUID id);  // Only this one needed
 
     Page<Book> findAllByOrderByPublishedDateAsc(Pageable pageable);
 
     Page<Book> findAllByOrderByPublishedDateDesc(Pageable pageable);
-    Page<Book> findByPublishedDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
-    Optional<Book> findById(UUID bookId);
+    Page<Book> findByPublishedDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 }

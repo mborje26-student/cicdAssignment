@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class BookDTO {
-    private Long id;
+    private UUID id;
     private String title;
     private String author;
     private LocalDate publishedDate;
@@ -30,7 +31,7 @@ public class BookDTO {
     private Long version;
 
     // Constructor for creating a new book
-    public BookDTO(Long id, String title, String author, LocalDate publishedDate, List<ReviewDTO> reviews) {
+    public BookDTO(UUID id, String title, String author, LocalDate publishedDate, List<ReviewDTO> reviews) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -39,7 +40,7 @@ public class BookDTO {
     }
 
     // Constructor for updating book without reviews
-    public BookDTO(Long id, String title, String author, LocalDate publishedDate) {
+    public BookDTO(UUID id, String title, String author, LocalDate publishedDate) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -50,11 +51,11 @@ public class BookDTO {
     public BookDTO() {}
 
     // Getters and Setters
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

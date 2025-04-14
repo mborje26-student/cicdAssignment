@@ -8,6 +8,8 @@ import com.example.bookreview.service.BookService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 
 public class BookReviewApplicationTest {
 
@@ -36,7 +39,7 @@ public class BookReviewApplicationTest {
 
         Book savedBook = new Book(bookDTO.getTitle(), bookDTO.getAuthor(), publishedDate);
 
-        Long mockId = 1L;
+        UUID mockId = UUID.randomUUID();
         savedBook.setId(mockId);
 
         when(bookRepository.save(any(Book.class))).thenReturn(savedBook);
@@ -48,8 +51,6 @@ public class BookReviewApplicationTest {
         assertEquals("Robert C. Martin", result.getAuthor());
         assertEquals(publishedDate, result.getPublishedDate());
     }
-
-
 
     @Test
     void testGetBookById() {

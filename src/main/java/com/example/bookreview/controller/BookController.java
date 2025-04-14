@@ -2,7 +2,7 @@ package com.example.bookreview.controller;
 
 import com.example.bookreview.dto.BookDTO;
 import com.example.bookreview.dto.ReviewDTO;
-import com.example.bookreview.exception.NoBooksFoundException; // Import your custom exception
+import com.example.bookreview.exception.NoBooksFoundException;
 import com.example.bookreview.service.BookService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/books")
@@ -25,7 +26,6 @@ public class BookController {
         this.bookService = bookService;
     }
 
-
     // Add Book
     @PostMapping
     public ResponseEntity<BookDTO> addBook(@RequestBody BookDTO bookDTO) {
@@ -35,12 +35,8 @@ public class BookController {
 
     // Get a Single Book by ID
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<BookDTO>> getBook(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<BookDTO>> getBook(@PathVariable UUID id) {
         BookDTO book = bookService.getBookById(id);
-
-        if (book == null) {
-            throw new NoBooksFoundException("Book with ID " + id + " not found.");
-        }
 
         EntityModel<BookDTO> bookResource = EntityModel.of(book,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getBook(id)).withSelfRel(),
@@ -49,7 +45,7 @@ public class BookController {
         return ResponseEntity.ok(bookResource);
     }
 
-    // Get All Books (with pagination)
+    // Get All Books (with optional year filter + sorting + pagination)
     @GetMapping
     public ResponseEntity<Page<BookDTO>> getAllBooks(
             @RequestParam(required = false) Integer year,
@@ -58,13 +54,9 @@ public class BookController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<BookDTO> books;
-
-        if (year != null) {
-            books = bookService.getBooksByYear(year, sortBy, sortDirection, PageRequest.of(page, size));
-        } else {
-            books = bookService.getAllBooksSorted(sortBy, sortDirection, PageRequest.of(page, size));
-        }
+        Page<BookDTO> books = (year != null)
+                ? bookService.getBooksByYear(year, sortBy, sortDirection, PageRequest.of(page, size))
+                : bookService.getAllBooksSorted(sortBy, sortDirection, PageRequest.of(page, size));
 
         if (books.isEmpty()) {
             throw new NoBooksFoundException("No books found.");
@@ -75,19 +67,14 @@ public class BookController {
 
     // Add Review to Book
     @PostMapping("/{bookId}/review")
-    public ResponseEntity<BookDTO> addReviewToBook(@PathVariable Long bookId, @RequestBody ReviewDTO reviewDTO) {
-        try {
-            BookDTO updatedBook = bookService.addReview(bookId, reviewDTO); // Call service method to add the review
-            return new ResponseEntity<>(updatedBook, HttpStatus.CREATED); // Return the updated book with review
-        } catch (Exception e) {
-            // Handle any errors, for example if book not found
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<BookDTO> addReviewToBook(@PathVariable UUID bookId, @RequestBody ReviewDTO reviewDTO) {
+        BookDTO updatedBook = bookService.addReview(bookId, reviewDTO);
+        return new ResponseEntity<>(updatedBook, HttpStatus.CREATED);
     }
 
     // Get Reviews for a Book
     @GetMapping("/{id}/reviews")
-    public ResponseEntity<List<ReviewDTO>> getBookReviews(@PathVariable Long id) {
+    public ResponseEntity<List<ReviewDTO>> getBookReviews(@PathVariable UUID id) {
         List<ReviewDTO> reviews = bookService.getReviewsByBookId(id);
 
         if (reviews.isEmpty()) {
@@ -99,21 +86,20 @@ public class BookController {
 
     // Delete Book by ID
     @DeleteMapping("/{id}")
-    @CacheEvict(value = "books", key = "#id")  // Clears cache
-    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+    @CacheEvict(value = "books", key = "#id")
+    public ResponseEntity<Void> deleteBook(@PathVariable UUID id) {
         boolean isDeleted = bookService.deleteBook(id);
 
         if (!isDeleted) {
             throw new NoBooksFoundException("Book with ID " + id + " not found to delete.");
         }
 
-        return ResponseEntity.noContent().build(); // HTTP 204
+        return ResponseEntity.noContent().build();
     }
 
     // Update Book details by ID
     @PutMapping("/{id}")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody BookDTO bookDTO) {
-        // Call service to update the book
+    public ResponseEntity<BookDTO> updateBook(@PathVariable UUID id, @RequestBody BookDTO bookDTO) {
         BookDTO updatedBook = bookService.updateBook(id, bookDTO);
 
         if (updatedBook == null) {
@@ -125,9 +111,8 @@ public class BookController {
 
     // Delete Review from Book
     @DeleteMapping("/{bookId}/review/{reviewId}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long bookId, @PathVariable Long reviewId) {
-        // Call the service to delete the review
+    public ResponseEntity<Void> deleteReview(@PathVariable UUID bookId, @PathVariable UUID reviewId) {
         bookService.deleteReview(bookId, reviewId);
-        return ResponseEntity.noContent().build();  // Return 204 No Content
+        return ResponseEntity.noContent().build();
     }
 }
