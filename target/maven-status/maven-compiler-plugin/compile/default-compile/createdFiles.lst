@@ -4,7 +4,6 @@ com\example\bookreview\models\Review.class
 com\example\bookreview\dto\BookDTO.class
 com\example\bookreview\exception\GlobalExceptionHandler.class
 com\example\bookreview\exception\InvalidURLException.class
-com\example\bookreview\TestAPI.class
 com\example\bookreview\exception\BookAlreadyExistsException.class
 com\example\bookreview\controller\BookController.class
 com\example\bookreview\controller\GreetingController.class

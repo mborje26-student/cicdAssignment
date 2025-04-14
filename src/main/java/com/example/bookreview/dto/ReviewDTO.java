@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
 
 public class ReviewDTO {
+    private final Long id;
     private int rating;  // Rating of the book, this can be updated
     private String comment;  // Comment for the review, this can be updated
     private String reviewerName;  // Name of the person who wrote the review
@@ -13,7 +14,7 @@ public class ReviewDTO {
 
     // Constructor for creating a new review (full constructor)
     public ReviewDTO(Long id, int rating, String comment, String reviewerName, LocalDate reviewDate) {
-
+        this.id = id;
         this.rating = rating;
         this.comment = comment;
         this.reviewerName = reviewerName;
@@ -21,7 +22,9 @@ public class ReviewDTO {
     }
 
     // Default constructor (useful for deserialization if needed)
-    public ReviewDTO() {}
+    public ReviewDTO(Long id) {
+        this.id = id;
+    }
 
     // Getters and Setters
 

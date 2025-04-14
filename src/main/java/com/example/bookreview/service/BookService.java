@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -193,5 +194,9 @@ public class BookService {
 
         // Delete the review from the review repository
         reviewRepository.delete(review);
+    }
+
+    public Book getBookById(UUID bookId) {
+        return null;
     }
 }

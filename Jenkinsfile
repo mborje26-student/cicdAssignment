@@ -5,6 +5,11 @@ pipeline {
         maven 'Maven Project'
     }
 
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
+
     stages {
         stage('Checkout') {
             steps {
@@ -45,5 +50,6 @@ pipeline {
                 }
             }
         }
+
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
@@ -22,4 +23,5 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findAllByOrderByPublishedDateDesc(Pageable pageable);
     Page<Book> findByPublishedDateBetween(LocalDate startDate, LocalDate endDate, Pageable pageable);
 
+    Optional<Book> findById(UUID bookId);
 }

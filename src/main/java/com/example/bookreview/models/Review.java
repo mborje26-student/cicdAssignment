@@ -2,7 +2,6 @@ package com.example.bookreview.models;
 
 import jakarta.persistence.*;
 
-import com.example.bookreview.models.Book;
 import java.time.LocalDate;
 
 @Entity
@@ -19,6 +18,9 @@ public class Review {
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
+
+    public Review() {
+    }
 
     // Getters and setters
     public Long getId() {
